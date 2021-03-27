@@ -10,9 +10,10 @@ def main():
     prices = get_prices()
 
     if len(prices) > 1:
-        price = prices[bot.clarify_the_ticket()]
-    else:
-        price = prices[0]
+        price = prices[bot.clarify_the_ticket() - 1]  # Пользователь вводит номер нужного билета как ему удобно,
+        # ... а у нас, программистов, всё начинается с 0, а не с 1
+    else:  # Все остальные случаи:
+        price = prices[0]  # ... это просто [1000]
 
     if price < previous_price:
         print('Билеты подешевели')  # Тут будет вызов для бота...
