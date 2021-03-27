@@ -1,1 +1,6 @@
+# Files
 tokens.py
+
+# Directories
+.idea/
+__pycache__/
