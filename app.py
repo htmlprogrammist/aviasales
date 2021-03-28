@@ -1,8 +1,6 @@
 import bot
 
-
-def get_prices():
-    return []
+previous_price = 0
 
 
 def main():
