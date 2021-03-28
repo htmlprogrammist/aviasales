@@ -1,6 +1,22 @@
 import bot
+import threading
+import datetime
 
 previous_price = 0
+delay = 5  # seconds
+pause = bool()  # False
+
+
+def get_prices():
+    global pause
+    if not pause:
+        threading.Timer(delay, get_prices).start()
+        now = datetime.datetime.now()
+        datum = now.strftime("%H:%M:%S")
+        print(datum)
+    else:
+        pass
+    return []
 
 
 def main():
