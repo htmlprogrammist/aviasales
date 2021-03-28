@@ -2,6 +2,7 @@ import telebot
 import tokens
 import app
 import threading
+import datetime
 
 bot = telebot.TeleBot(tokens.token)
 delay = 5
@@ -12,7 +13,9 @@ def get_prices():
     global pause
     if not pause:
         threading.Timer(delay, get_prices).start()
-        print('\nВызов функции `get_prices()`')
+        now = datetime.datetime.now()
+        datum = now.strftime("%H:%M:%S")
+        print(datum)
     else:
         pass
     return []
@@ -27,7 +30,8 @@ def clarify_the_ticket():  # Уточнить номер билета, на сл
 def simulate_call():
     global pause
     get_prices()
-    pause = bool(input('=> '))  # False => stops algorithm
+    pause = bool(input())  # False => stops algorithm
 
 
+pause = bool(input())
 simulate_call()
