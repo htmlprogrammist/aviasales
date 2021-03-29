@@ -2,6 +2,7 @@ import telebot
 import tokens
 import datetime  # remove from the production version!
 import time
+import threading
 
 bot = telebot.TeleBot(tokens.token)
 previous_price = 0
@@ -33,8 +34,7 @@ def main():
         if price > previous_price:
             print('Билеты подорожали')  # ... он будет выводит вот эту фразу и цену.
             previous_price = price
-        time.sleep(delay)  # задержка в delay секунд
-        main()  # рекурсия, после задержки, функция вызывает саму себя и процесс повторяется
+        threading.Timer(delay, main).start()
         return previous_price
 
 
