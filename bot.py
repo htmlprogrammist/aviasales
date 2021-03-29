@@ -30,8 +30,7 @@ def main():
             print('Билеты подорожали')  # ... он будет выводит вот эту фразу и цену.
             previous_price = price
         threading.Timer(delay, main).start()
-        return previous_price  # , pause - обязательно ли делать возврат паузы?
-        # Если работать не будет, то надо попробовать убрать комментарий
+        return previous_price
 
 
 # Приветствие
@@ -63,10 +62,10 @@ def stop_bot(message):
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
     global pause
-    if message.text[8:21] == "travel.yandex":
-        bot.send_message(message.from_user.id, "Прекрасно! Я принял Вашу ссылку и принимаюсь за работу.")
-        clarify_the_ticket(message)  # ValueError: invalid literal for int() with base 10: 'https://travel.yandex.ru/avia/
+    if message.text[8:21] == "travel.yandex" and not pause:
+        bot.send_message(message.from_user.id, "Прекрасно! Я принял Вашу ссылку, осталось только уточнить номер билета (сверху вниз). Если билет один, то отправьте число 1.")
         pause = False  # сброс значения паузы, чтобы функция main снова могла работать
+        bot.register_next_step_handler(message, clarify_the_ticket)  # Ожидаю, пока пользователь введёт сообщение с числом, потом вызывается функция clarify...
     else:
         bot.send_message(message.from_user.id, "Прошу прощения, но я не понимаю, что Вы имеете в виду. Попробуйте использовать /help.")
 
@@ -75,12 +74,12 @@ def get_text_messages(message):
 @bot.message_handler(content_types=['text'])
 def clarify_the_ticket(message):
     global id_of_the_ticket
-    bot.send_message(message.from_user.id, "Пожалуйста, введите номер билета (считая сверху вниз). Если билет всего один, то введите число 1.")
-    id_of_the_ticket = int(message.text) - 1
-    bot.send_message(message.from_user.id, "Хорошо, спасибо. Продолжаю работать.")
-    main()
-    # else:
-    #     bot.send_message(message.from_user.id, "Необходимо было ввести число. Попробуйте снова.")
+    try:
+        id_of_the_ticket = int(message.text) - 1
+        bot.send_message(message.from_user.id, "Хорошо, спасибо. Начинаю работать.")
+        main()
+    except ValueError:
+        bot.send_message(message.from_user.id, "Прошу прощения, но нужно было ввести номер билета. Давайте начнём всё сначала: отправьте ссылку повторно.")
 
 
 '''
