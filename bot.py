@@ -22,19 +22,10 @@ def help_user(message):
 
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
-    # if message:
     if message.text[8:21] == "travel.yandex":
         bot.send_message(message.from_user.id, "Прекрасно! Я принял Вашу ссылку и готов работать.")
     else:
         bot.send_message(message.from_user.id, "Не понял...")
-    # try:
-    #     if message.text[8:21] == "travel.yandex":
-    #         bot.send_message(message.from_user.id, "Прекрасно! Я принял Вашу ссылку и готов работать.")
-    #         # Здесь будет вызов функции, хотя возможен и вызов функции, и фидбек от бота
-    # except IndexError:
-    #     bot.send_message(message.from_user.id, "Не понял...")
-    # else:  # Не работает... куда её пихнуть - непонятно.
-    #     bot.send_message(message.from_user.id, "Прошу прощения, но я не понимаю, что Вы имеете в виду. Напишите: /help.")
 
 
 '''
