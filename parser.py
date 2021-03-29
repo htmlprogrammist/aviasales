@@ -1,4 +1,7 @@
 import re
+import requests
+from bs4 import BeautifulSoup as bs
+from selenium import webdriver
 
 
 def get_prices():
@@ -11,7 +14,25 @@ def get_prices():
     # for item in prices:
     #     item = re.sub(r'\s+', '', item)
     # prices = [item.translate({ord(c): None for c in string.whitespace}) for item in prices]
-    return prices
+
+    URL_TEMPLATE = "https://travel.yandex.ru/avia/search/result/?adult_seats=1&children_seats=0&fromId=c239&infant_seats=0&klass=economy&oneway=1&return_date=&toId=c213&when=2021-04-03#empty"
+    r = requests.get(URL_TEMPLATE)
+    print(r.status_code)
+    # print(r.text)
+    soup = bs(r.text, "html.parser")
+    price_list = soup.find_all('span', class_='text')
+    for price in price_list:
+        print(price.text)
+
+    # silenium
+    # browser.get('http://playsports365.com/wager/OpenBets.aspx')
+    # requiredHtml = browser.page_source
+
+# Не удаляю комментарии из функции, потому что пока неясно, как себя поведёт парсер, когда получит значения и запихнёт
+# их внутрь prices
 
 
-print(get_prices())
+get_prices()
+# print(get_prices())
+
+
