@@ -17,13 +17,13 @@ def get_prices():
     return ['1000']  # prices
 
 
-def main():
+def main(message):
     global pause, previous_price
     if not pause:
         prices = get_prices()
 
         if len(prices) > 1:
-            price = int(prices[clarify_the_ticket() - 1])  # Пользователь вводит номер нужного билета как ему удобно,
+            price = int(prices[clarify_the_ticket(message) - 1])  # Пользователь вводит номер нужного билета как ему удобно,
             # ... а у нас, программистов, всё начинается с 0, а не с 1
         else:  # Все остальные случаи:
             price = int(prices[0])
@@ -57,15 +57,21 @@ def help_user(message):
 def get_text_messages(message):
     if message.text[8:21] == "travel.yandex":
         bot.send_message(message.from_user.id, "Прекрасно! Я принял Вашу ссылку и принимаюсь за работу.")
-        main()
+        main()  # вынужденная мера передавать в main() переменную message.
+        # Я уверен, что с производительностью могут быть проблемы, но на этом проекте это будет не критично
     else:
         bot.send_message(message.from_user.id, "Прошу прощения, но я не понимаю, что Вы имеете в виду. Попробуйте использовать /help.")
 
 
-# @handler_
-def clarify_the_ticket():  # Уточнить номер билета, на случай, если он там не один
-    id_of_the_ticket = 0
-    return id_of_the_ticket
+# Уточнить номер билета, на случай, если он там не один
+@bot.message_handler(content_types=['text'])
+def clarify_the_ticket(message):
+    try:
+        if int(message.text):
+            bot.send_message(message.from_user.id, "Хорошо, спасибо. Продолжаю работать. ")
+            return int(message.text)
+    except ValueError:
+        bot.send_message(message.from_user.id, "Необходимо было ввести число. Попробуйте снова.")
 
 
 '''
