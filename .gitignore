@@ -1,6 +1,7 @@
 # Files
 tokens.py
 test.py
+test_bot.py
 
 # Directories
 .idea/
