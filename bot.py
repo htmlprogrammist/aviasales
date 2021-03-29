@@ -17,7 +17,7 @@ def get_prices():
     return ['1000']  # prices
 
 
-def main(message):
+def main():
     global pause, previous_price
     if not pause:
         prices = get_prices()
@@ -38,11 +38,13 @@ def main(message):
         return previous_price
 
 
+# Приветствие
 @bot.message_handler(commands=['start'])
 def get_start_message(message):
     bot.send_message(message.from_user.id, "Здравствуйте, я Ваш авиатор. Отправьте мне ссылку на Ваш билет из Яндекс.Путешествия")
 
 
+# Помощь
 @bot.message_handler(commands=['help'])
 def help_user(message):
     bot.send_message(message.from_user.id,
@@ -53,17 +55,17 @@ def help_user(message):
 - Вы перейдёте по ссылке, по которой и будете смотреть билеты. Скопируйте эту ссылку и отправьте мне.''')
 
 
+# Основная логика работы бота
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
     if message.text[8:21] == "travel.yandex":
         bot.send_message(message.from_user.id, "Прекрасно! Я принял Вашу ссылку и принимаюсь за работу.")
-        main()  # вынужденная мера передавать в main() переменную message.
-        # Я уверен, что с производительностью могут быть проблемы, но на этом проекте это будет не критично
+        main()
     else:
         bot.send_message(message.from_user.id, "Прошу прощения, но я не понимаю, что Вы имеете в виду. Попробуйте использовать /help.")
 
 
-# Уточнить номер билета, на случай, если он там не один
+# Уточнение номера билета, на случай, если он там не один
 @bot.message_handler(content_types=['text'])
 def clarify_the_ticket(message):
     try:
