@@ -36,7 +36,9 @@ def main():
 # Приветствие
 @bot.message_handler(commands=['start'])
 def get_start_message(message):
+    global pause
     bot.send_message(message.from_user.id, "Здравствуйте, я Ваш авиатор. Отправьте мне ссылку на Ваш билет из Яндекс.Путешествия")
+    pause = False  # сброс значения паузы, чтобы функция main снова могла работать
 
 
 # Помощь
@@ -64,7 +66,6 @@ def get_text_messages(message):
     global pause
     if message.text[8:21] == "travel.yandex" and not pause:
         bot.send_message(message.from_user.id, "Прекрасно! Я принял Вашу ссылку, осталось только уточнить номер билета (сверху вниз). Если билет один, то отправьте число 1.")
-        pause = False  # сброс значения паузы, чтобы функция main снова могла работать
         bot.register_next_step_handler(message, clarify_the_ticket)  # Ожидаю, пока пользователь введёт сообщение с числом, потом вызывается функция clarify...
     else:
         bot.send_message(message.from_user.id, "Прошу прощения, но я не понимаю, что Вы имеете в виду. Попробуйте использовать /help.")
