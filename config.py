@@ -1,2 +1,0 @@
-token = ''
-delay = 5
