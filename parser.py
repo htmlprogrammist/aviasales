@@ -38,5 +38,3 @@ def get_prices_list():
 
 
 # print(get_prices_list())
-
-
