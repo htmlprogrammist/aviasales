@@ -1,20 +1,16 @@
 import telebot
-import tokens
-import datetime  # remove from the production version!
+import config
 import threading
 
-bot = telebot.TeleBot(tokens.token)
+bot = telebot.TeleBot(config.token)
 previous_price = 0
-delay = 5  # seconds
+delay = config.delay
 pause = bool()  # False
 id_of_the_ticket = 0
 
 
 def get_prices():
     prices = ['1000', '1200', '1300']
-    now = datetime.datetime.now()
-    datum = now.strftime("%H:%M:%S")
-    print(datum)
     return prices
 
 
