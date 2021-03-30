@@ -46,17 +46,17 @@ def get_start_message(message):
 def help_user(message):
     bot.send_message(message.from_user.id,
                      '''Если Вы не знаете, как отправить мне ссылку на билет, то следуйте следующей инструкции:
-- Откройте сайт "Яндекс.Путешествия"
-- Выберите "Авиабилеты"
+- Откройте сайт "Яндекс.Путешествия" и выберите "Авиабилеты"
 - Определите город и дату для поиска билетов, затем нажмите кнопку "Найти"
-- Вы перейдёте по ссылке, по которой и будете смотреть билеты. Скопируйте эту ссылку и отправьте мне.''')
+- Вы перейдёте по ссылке, по которой и будете смотреть билеты. Отправьте мне номер билета в списке, который Вы видите. Например, если Вам нужен первый билет, отправьте 1, если второй - 2.
+- Скопируйте ссылку на страницу, на которой Вы сейчас находитесь, и отправьте мне.''')
 
 
 # Остановка работы
 @bot.message_handler(commands=['stop'])
 def stop_bot(message):
     global pause
-    pause = True  # функция main() больше не пашет
+    pause = True  # функция main() больше не работает
     bot.send_message(message.from_user.id, "Был рад служить. Надеюсь, был Вам полезен.")
 
 
@@ -66,12 +66,12 @@ def get_text_messages(message):
     global pause
     if message.text[8:21] == "travel.yandex" and not pause:
         bot.send_message(message.from_user.id, "Прекрасно! Я принял Вашу ссылку, осталось только уточнить номер билета (сверху вниз). Если билет один, то отправьте число 1.")
-        bot.register_next_step_handler(message, clarify_the_ticket)  # Ожидаю, пока пользователь введёт сообщение с числом, потом вызывается функция clarify...
+        bot.register_next_step_handler(message, clarify_the_ticket)  # Ожидаю, пока пользователь введёт сообщение с числом, потом вызывается функция clarify_the_ticket()
     else:
         bot.send_message(message.from_user.id, "Прошу прощения, но я не понимаю, что Вы имеете в виду. Попробуйте использовать /help.")
 
 
-# Уточнение номера билета, на случай, если он там не один
+# Уточнение номера билета
 @bot.message_handler(content_types=['text'])
 def clarify_the_ticket(message):
     global id_of_the_ticket
