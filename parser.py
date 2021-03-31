@@ -7,15 +7,16 @@ import time
 import lxml.html
 
 
+# https://stackoverflow.com/questions/59304608/how-to-solve-timed-out-error-when-using-requests-with-beautifulsoup
+
 def get_prices():
 
     URL_TEMPLATE = "https://travel.yandex.ru/avia/search/result/?adult_seats=1&children_seats=0&fromId=c239&infant_seats=0&klass=economy&oneway=1&return_date=&toId=c213&when=2021-04-03#empty"
-    r = requests.get(URL_TEMPLATE)
-    time.sleep(10)
+    r = requests.get(URL_TEMPLATE, timeout = (12000, 12000))
     print(r.status_code)
     # print(r.text)
     soup = bs(r.text, "html.parser")
-    price_list = soup.find_all('span', class_='text')
+    price_list = soup.find_all('span', class_='price')
     for price in price_list:
         print(price.text)
 
@@ -24,7 +25,7 @@ def get_prices():
     # requiredHtml = browser.page_source
 
 
-# get_prices()
+get_prices()
 
 
 def get_prices_list():
@@ -64,7 +65,7 @@ def second_parser():
     resp = requests.get(url)
     # print(resp.text)
     root = lxml.html.fromstring(resp.text)
-    # print(root)
+    print(root)
 
 
 # second_parser()
