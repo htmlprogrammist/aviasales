@@ -25,6 +25,8 @@ def main():
         if price > previous_price:
             print('Билеты подорожали')  # ... он будет выводит вот эту фразу и цену.
             previous_price = price
+            # bot.send_message(message.from_user.id,
+            #                  "Цена на билет поднялась. Текущая стоимость составляет {0} рублей".format(previous_price))
         threading.Timer(delay, main).start()
         return previous_price
 
@@ -33,7 +35,8 @@ def main():
 @bot.message_handler(commands=['start'])
 def get_start_message(message):
     global pause
-    bot.send_message(message.from_user.id, "Здравствуйте, я Ваш авиатор. Отправьте мне ссылку на Ваш билет из Яндекс.Путешествия")
+    bot.send_message(message.from_user.id, "Здравствуйте, я Ваш авиатор. Отправьте мне ссылку на Ваш билет из "
+                                           "Яндекс.Путешествия")
     pause = False  # сброс значения паузы, чтобы функция main снова могла работать
 
 
@@ -42,7 +45,6 @@ def get_start_message(message):
 def help_user(message):
     bot.send_message(message.from_user.id,
                      '''Инструкция:
-
 - Откройте сайт "Яндекс.Путешествия"
 - Выберите "Авиабилеты"
 - Определите город и дату для поиска билетов, затем нажмите кнопку "Найти"
@@ -68,10 +70,13 @@ def stop_bot(message):
 def get_text_messages(message):
     global pause
     if message.text[8:21] == "travel.yandex" and not pause:
-        bot.send_message(message.from_user.id, "Прекрасно! Я принял Вашу ссылку, осталось только уточнить номер билета (сверху вниз). Если билет один, то отправьте число 1.")
-        bot.register_next_step_handler(message, clarify_the_ticket)  # Ожидаю, пока пользователь введёт сообщение с числом, потом вызывается функция clarify_the_ticket()
+        bot.send_message(message.from_user.id, "Прекрасно! Я принял Вашу ссылку, осталось только уточнить номер "
+                                               "билета (сверху вниз). Если билет один, то отправьте число 1.")
+        bot.register_next_step_handler(message, clarify_the_ticket)
+        # Ожидаю, пока пользователь введёт сообщение с числом, потом вызывается функция clarify_the_ticket()
     else:
-        bot.send_message(message.from_user.id, "Прошу прощения, но я не понимаю, что Вы имеете в виду. Попробуйте использовать /help.")
+        bot.send_message(message.from_user.id, "Прошу прощения, но я не понимаю, что Вы имеете в виду. Попробуйте "
+                                               "использовать /help.")
 
 
 # Уточнение номера билета
@@ -80,10 +85,26 @@ def clarify_the_ticket(message):
     global id_of_the_ticket
     try:
         id_of_the_ticket = int(message.text) - 1
-        bot.send_message(message.from_user.id, "Хорошо, спасибо. Начинаю работать. Если Вы желаете остановить меня, введите команду /stop")
-        main()
+        bot.send_message(message.from_user.id, "Хорошо, спасибо. Начинаю работать. Если Вы желаете остановить меня, "
+                                               "введите команду /stop")
+        main(message)
     except ValueError:
-        bot.send_message(message.from_user.id, "Прошу прощения, но нужно было ввести номер билета. Давайте начнём всё сначала: отправьте ссылку повторно.")
+        bot.send_message(message.from_user.id, "Прошу прощения, но нужно было ввести номер билета. Давайте начнём всё "
+                                               "сначала: отправьте ссылку повторно.")
+
+
+@bot.message_handler(content_types=['text'])
+def price_has_gone_up(message):
+    global previous_price
+    bot.send_message(message.from_user.id,
+                     "Цена на билет поднялась. Текущая стоимость составляет {0} рублей".format(previous_price))
+
+
+@bot.message_handler(content_types=['text'])
+def price_has_dropped(message):
+    global previous_price
+    bot.send_message(message.from_user.id,
+                     "Цена на билет упала. Текущая стоимость составляет {0} рублей".format(previous_price))
 
 
 '''
