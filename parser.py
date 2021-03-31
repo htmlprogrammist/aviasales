@@ -9,16 +9,25 @@ import lxml.html
 
 # https://stackoverflow.com/questions/59304608/how-to-solve-timed-out-error-when-using-requests-with-beautifulsoup
 
-def get_prices():
 
-    URL_TEMPLATE = "https://travel.yandex.ru/avia/search/result/?adult_seats=1&children_seats=0&fromId=c239&infant_seats=0&klass=economy&oneway=1&return_date=&toId=c213&when=2021-04-03#empty"
-    r = requests.get(URL_TEMPLATE, timeout = (12000, 12000))
-    print(r.status_code)
-    # print(r.text)
-    soup = bs(r.text, "html.parser")
-    price_list = soup.find_all('span', class_='price')
-    for price in price_list:
-        print(price.text)
+def get_prices():
+    chromedriver = '/Users/htmlprogrammist/Downloads/chromedriver'
+    options = webdriver.ChromeOptions()
+    options.add_argument('headless')  # для открытия headless-браузера
+    browser = webdriver.Chrome(executable_path=chromedriver, chrome_options=options)
+    browser.get("https://travel.yandex.ru/avia/search/result/?adult_seats=1&children_seats=0&fromId=c239&infant_seats=0&klass=economy&oneway=1&return_date=&toId=c213&when=2021-04-03#empty")
+    price = browser.find_element_by_class_name('price')
+    print(price)
+# def get_prices():
+#     URL_TEMPLATE = "https://travel.yandex.ru/avia/search/result/?adult_seats=1&children_seats=0&fromId=c239&infant_seats=0&klass=economy&oneway=1&return_date=&toId=c213&when=2021-04-03#empty"
+#     r = requests.get(URL_TEMPLATE, timeout = (1000, 12000))
+#     print(r.status_code)
+#     # print(r.text)
+#     soup = bs(r.text, "html.parser")
+#     price_list = soup.find_all('span', class_='text')
+#     print(price_list)
+    # for price in price_list:
+    #     print(price.text)
 
     # silenium
     # browser.get('http://playsports365.com/wager/OpenBets.aspx')
@@ -26,6 +35,19 @@ def get_prices():
 
 
 get_prices()
+
+
+def ruslan_parser():
+    url = "https://travel.yandex.ru/avia/search/result/?adult_seats=1&children_seats=0&fromId=c1094&infant_seats=0&klass=economy&oneway=2&return_date=2021-05-08&toId=c213&utm_campaign=ssa_brand.travel_ru_all_new_11909513015&utm_content=k50id%7Ckwd-306418496100%7Ccid%7C11909513015%7Caid%7C488100031827%7Cgid%7C119481951270%7Cpos%7C%7Csrc%7Cg_%7Cdvc%7Cc%7Creg%7C1011927%7Crin%7C%7C&utm_medium=search&utm_source=google&utm_term=%2B%D1%8F%D0%BD%D0%B4%D0%B5%D0%BA%D1%81%20%2B%D0%BF%D1%83%D1%82%D0%B5%D1%88%D0%B5%D1%81%D1%82%D0%B2%D0%B8%D1%8F&when=2021-03-31"
+    r = requests.get(url=url, timeout=(3.05, 27))
+    soup = bs(r.text, "html.parser")
+    price_list = soup.find_all('span', class_='price')
+    print(price_list)
+    # for price in price_list:
+    #     print(price.text)
+
+
+ruslan_parser()
 
 
 def get_prices_list():
