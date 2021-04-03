@@ -6,6 +6,10 @@ import time
 # second parser
 import lxml.html
 
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+
 
 # https://stackoverflow.com/questions/59304608/how-to-solve-timed-out-error-when-using-requests-with-beautifulsoup
 
@@ -15,9 +19,19 @@ def get_prices():
     options = webdriver.ChromeOptions()
     options.add_argument('headless')  # для открытия headless-браузера
     browser = webdriver.Chrome(executable_path=chromedriver, chrome_options=options)
-    browser.get("https://travel.yandex.ru/avia/search/result/?adult_seats=1&children_seats=0&fromId=c239&infant_seats=0&klass=economy&oneway=1&return_date=&toId=c213&when=2021-04-03#empty")
-    price = browser.find_element_by_class_name('price')
-    print(price)
+    # browser.implicitly_wait(60)
+    browser.get("https://travel.yandex.ru/avia/search/result/?adult_seats=1&children_seats=0&fromId=c1094&infant_seats=0&klass=economy&oneway=1&return_date=&toId=c213&when=2021-04-08")
+    # price = browser.find_element_by_class_name('price')
+
+    try:
+        element = WebDriverWait(browser, 30).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "price"))
+        )
+        print(element.text)
+    finally:
+        browser.quit()
+
+
 # def get_prices():
 #     URL_TEMPLATE = "https://travel.yandex.ru/avia/search/result/?adult_seats=1&children_seats=0&fromId=c239&infant_seats=0&klass=economy&oneway=1&return_date=&toId=c213&when=2021-04-03#empty"
 #     r = requests.get(URL_TEMPLATE, timeout = (1000, 12000))
@@ -47,7 +61,7 @@ def ruslan_parser():
     #     print(price.text)
 
 
-ruslan_parser()
+# ruslan_parser()
 
 
 def get_prices_list():
