@@ -24,7 +24,8 @@
 ## Установка
 1. Создайте файл `config.py`;
 2. Создайте переменную `token` и в качестве значения используйте строку, содержащую API Token, полученный от Bot Father;
-3. Создайте переменную `delay` и в качестве значения используйте натуральное число. Задержка указывается в секундах. По умолчанию это значение составляет 10 минут.
+3. Создайте переменную `delay` и в качестве значения используйте натуральное число. Задержка указывается в секундах. По умолчанию это значение составляет 10 минут;
+4. Введите `pip3 install -r requirements.txt`, чтобы установить необходимые библиотеки
 
 ## Примечание
 Не стоит отправлять боту одну и ту же ссылку несколько раз. Библиотека `threading` создаёт то количество запросов, сколько раз была отправлена ссылка. Возможна ситуация, когда бот просто ляжет, дав слишком большую нагрузку на сервер своими запросами (или парсер перестанет передавать значения)
@@ -57,6 +58,7 @@ The bot then asks the user to specify the ticket number. The ticket number is co
 1. Create a file `config.py`;
 2. Create the `token` variable and use the string containing the *API Token* received from Bot Father as the value;
 3. Create the `delay` variable and use a natural number as the value. The delay is specified in *seconds*. By default, this value is 600 (10 minutes).
+4. Enter `pip3 install-r requirements.txt` to install the required libraries
 
 ## NB!
 Do not send the same link to the bot several times. The `threading` library creates the number of requests that equals the number of times the link was sent by the user. There may be a situation when the bot simply lies down, giving too much load on the server with its' requests (or the parser stops transmitting values)
