@@ -3,7 +3,7 @@ import config
 import threading
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 
 bot = telebot.TeleBot(config.token)
@@ -11,38 +11,46 @@ previous_price = 0
 delay = config.delay
 pause = bool()  # False
 id_of_the_ticket = 0
+link = ''
+user = 0
 
 
-def get_prices():
+def get_prices(url):
+    prices = []
     chromedriver = '/Users/htmlprogrammist/Downloads/chromedriver'
     options = webdriver.ChromeOptions()
     options.add_argument('headless')  # для открытия headless-браузера
     browser = webdriver.Chrome(executable_path=chromedriver, chrome_options=options)
-    browser.get("https://travel.yandex.ru/avia/search/result/?adult_seats=1&children_seats=0&fromId=c1094&infant_seats=0&klass=economy&oneway=1&return_date=&toId=c213&when=2021-04-08")
+    browser.get(url)
 
     try:
-        element = WebDriverWait(browser, 30).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "price"))
-        )
-        # print(int(element.text[:5]) + 1)  # ValueError: invalid literal for int() with base 10: '4\u2006780'
-        print(element.text[:5])
+        price_list = WebDriverWait(browser, 30).until(
+            ec.presence_of_all_elements_located((By.CLASS_NAME, "price"))
+        )  # парсинг всех элементов с классом 'price'. Возвращает list
+        for i in range(len(price_list)):  # обработка полученного price_list
+            price = ''.join(price_list[i].text.split('\u2006'))
+            price = price[:-1]  # убираю последний символ: "Рубль"
+            prices.append(int(price))
+        return prices
     finally:
         browser.quit()
 
 
 def main():
-    global pause, previous_price, id_of_the_ticket
+    global pause, previous_price, id_of_the_ticket, link, user
     if not pause:
-        prices = get_prices()
+        prices = get_prices(link)
         price = int(prices[id_of_the_ticket])
         if price < previous_price:
-            print('Билеты подешевели')  # Тут будет вызов для бота...
             previous_price = price  # Перезапись цены, чтобы текущая стоимость билета для следующей была предыдущей
+            bot.send_message(user,
+                             "Цена на билет снизилась. Текущая стоимость составляет {0} рублей. Если Вы желаете "
+                             "остановить меня, введите команду /stop".format(previous_price))
         if price > previous_price:
-            print('Билеты подорожали')  # ... он будет выводит вот эту фразу и цену.
             previous_price = price
-            # bot.send_message(message.from_user.id,
-            #                  "Цена на билет поднялась. Текущая стоимость составляет {0} рублей".format(previous_price))
+            bot.send_message(user,
+                             "Цена на билет поднялась. Текущая стоимость составляет {0} рублей. Если Вы желаете "
+                             "остановить меня, введите команду /stop".format(previous_price))
         threading.Timer(delay, main).start()
         return previous_price
 
@@ -50,9 +58,11 @@ def main():
 # Приветствие
 @bot.message_handler(commands=['start'])
 def get_start_message(message):
-    global pause
+    global pause, user
     bot.send_message(message.from_user.id, "Здравствуйте, я Ваш авиатор. Отправьте мне ссылку на Ваш билет из "
                                            "Яндекс.Путешествия")
+    user = message.from_user.id  # передаю id пользователя, чтобы потом отправлять сообщения через функцию,
+    # содержащую в себе логику работы
     pause = False  # сброс значения паузы, чтобы функция main снова могла работать
 
 
@@ -84,10 +94,11 @@ def stop_bot(message):
 # Основная логика работы бота
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
-    global pause
+    global pause, link
     if message.text[8:21] == "travel.yandex" and not pause:
         bot.send_message(message.from_user.id, "Прекрасно! Я принял Вашу ссылку, осталось только уточнить номер "
                                                "билета (сверху вниз). Если билет один, то отправьте число 1.")
+        link = message.text
         bot.register_next_step_handler(message, clarify_the_ticket)
         # Ожидаю, пока пользователь введёт сообщение с числом, потом вызывается функция clarify_the_ticket()
     else:
@@ -101,9 +112,7 @@ def clarify_the_ticket(message):
     global id_of_the_ticket
     try:
         id_of_the_ticket = int(message.text) - 1
-        bot.send_message(message.from_user.id, "Хорошо, спасибо. Начинаю работать. Если Вы желаете остановить меня, "
-                                               "введите команду /stop")
-        main(message)
+        main()
     except ValueError:
         bot.send_message(message.from_user.id, "Прошу прощения, но нужно было ввести номер билета. Давайте начнём всё "
                                                "сначала: отправьте ссылку повторно.")
@@ -122,9 +131,5 @@ def price_has_dropped(message):
     bot.send_message(message.from_user.id,
                      "Цена на билет упала. Текущая стоимость составляет {0} рублей".format(previous_price))
 
-
-'''
-https://travel.yandex.ru/avia/search/result/?adult_seats=1&children_seats=0&fromId=c239&infant_seats=0&klass=economy&oneway=1&return_date=&toId=c213&when=2021-04-03#empty
-'''
 
 bot.polling(none_stop=True)
