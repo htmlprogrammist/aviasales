@@ -57,8 +57,8 @@ The bot then asks the user to specify the ticket number. The ticket number is co
 ## Installation
 1. Create a file `config.py`;
 2. Create the `token` variable and use the string containing the *API Token* received from Bot Father as the value;
-3. Create the `delay` variable and use a natural number as the value. The delay is specified in *seconds*. By default, this value is 600 (10 minutes).
-4. Enter `pip3 install-r requirements.txt` to install the required libraries
+3. Create the `delay` variable and use a natural number as the value. The delay is specified in *seconds*. By default, this value is 600 (10 minutes);
+4. Enter `pip3 install-r requirements.txt` to install the required libraries.
 
 ## NB!
 Do not send the same link to the bot several times. The `threading` library creates the number of requests that equals the number of times the link was sent by the user. There may be a situation when the bot simply lies down, giving too much load on the server with its' requests (or the parser stops transmitting values)
