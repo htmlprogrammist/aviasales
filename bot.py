@@ -1,6 +1,7 @@
 import telebot
 import config
 import threading
+import os
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
@@ -17,10 +18,9 @@ user = 0
 
 def get_prices(url):
     prices = []
-    chromedriver = '/Users/htmlprogrammist/Downloads/chromedriver'
-    options = webdriver.ChromeOptions()
-    options.add_argument('headless')  # для открытия headless-браузера
-    browser = webdriver.Chrome(executable_path=chromedriver, chrome_options=options)
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.binary_location = os.environ.get('GOOGLE_CHROME_SHIM', None)
+    browser = webdriver.Chrome(executable_path="chromedriver", chrome_options=chrome_options)
     browser.get(url)
 
     try:
