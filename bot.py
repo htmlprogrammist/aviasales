@@ -31,6 +31,7 @@ def get_prices(url):
             price = ''.join(price_list[i].text.split('\u2006'))
             price = price[:-1]  # убираю последний символ: "Рубль"
             prices.append(int(price))
+        print(prices)
         return prices
     finally:
         browser.quit()
@@ -116,20 +117,6 @@ def clarify_the_ticket(message):
     except ValueError:
         bot.send_message(message.from_user.id, "Прошу прощения, но нужно было ввести номер билета. Давайте начнём всё "
                                                "сначала: отправьте ссылку повторно.")
-
-
-@bot.message_handler(content_types=['text'])
-def price_has_gone_up(message):
-    global previous_price
-    bot.send_message(message.from_user.id,
-                     "Цена на билет поднялась. Текущая стоимость составляет {0} рублей".format(previous_price))
-
-
-@bot.message_handler(content_types=['text'])
-def price_has_dropped(message):
-    global previous_price
-    bot.send_message(message.from_user.id,
-                     "Цена на билет упала. Текущая стоимость составляет {0} рублей".format(previous_price))
 
 
 bot.polling(none_stop=True)
