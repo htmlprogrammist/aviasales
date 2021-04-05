@@ -1,4 +1,7 @@
 # Ваш авиатор
+## Ссылка
+http://t.me/youraviatorbot
+
 ## Использование
 1. Бот реагирует на команду **/start**;
 2. Далее необходимо отправить ссылку на Ваш запрос в Яндекс.Путешествия (вкладка "Авиабилеты") и отправить **ссылку** на эту страницу боту;
@@ -33,6 +36,9 @@
 
 ---
 # Your aviator
+## Link
+http://t.me/youraviatorbot
+
 ## Usage
 1. The bot responds to the **/start** command;
 2. Next, you need to send a link to your request to Yandex.Travel (the "Flights" tab) and send a **link** to this page to the bot;
