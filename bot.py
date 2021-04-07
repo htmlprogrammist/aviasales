@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 
 bot = telebot.TeleBot(config.token)
 previous_price = 0
@@ -18,9 +19,12 @@ user = 0
 
 def get_prices(url):
     prices = []
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.binary_location = os.environ.get('GOOGLE_CHROME_SHIM', None)
-    browser = webdriver.Chrome(executable_path="chromedriver", chrome_options=chrome_options)
+    options = Options()
+    options.binary_location = os.environ.get('GOOGLE_CHROME_SHIM', None)
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--no-sandbox')
+    browser = webdriver.Chrome(executable_path=str(os.environ.get('CHROMEDRIVER_PATH')), chrome_options=options)
     browser.get(url)
 
     try:
