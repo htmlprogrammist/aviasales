@@ -20,7 +20,7 @@ user = 0
 def get_prices(url):
     prices = []
     options = Options()
-    options.binary_location = os.environ.get('GOOGLE_CHROME_SHIM', None)
+    options.binary_location = os.environ.get('GOOGLE_CHROME_BIN')
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
     options.add_argument('--no-sandbox')
