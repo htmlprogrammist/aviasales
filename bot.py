@@ -24,7 +24,9 @@ def get_prices(url):
     options.add_argument('--headless')
     options.add_argument('--disable-gpu')
     options.add_argument('--no-sandbox')
-    browser = webdriver.Chrome(executable_path=str(os.environ.get('CHROMEDRIVER_PATH')), chrome_options=options)
+    chromedriver = '/Users/htmlprogrammist/Downloads/chromedriver'
+    browser = webdriver.Chrome(executable_path=chromedriver, chrome_options=options)
+    # browser = webdriver.Chrome(executable_path=, chrome_options=options)
     browser.get(url)
 
     try:
