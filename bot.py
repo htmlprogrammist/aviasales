@@ -1,10 +1,12 @@
 import telebot
 import config
 import threading
+import os
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 
 bot = telebot.TeleBot(config.token)
 previous_price = 0
@@ -17,10 +19,14 @@ user = 0
 
 def get_prices(url):
     prices = []
+    options = Options()
+    options.binary_location = os.environ.get('GOOGLE_CHROME_BIN')
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--no-sandbox')
     chromedriver = '/Users/htmlprogrammist/Downloads/chromedriver'
-    options = webdriver.ChromeOptions()
-    options.add_argument('headless')  # для открытия headless-браузера
     browser = webdriver.Chrome(executable_path=chromedriver, chrome_options=options)
+    # browser = webdriver.Chrome(executable_path=, chrome_options=options)
     browser.get(url)
 
     try:
@@ -41,7 +47,9 @@ def main():
     global pause, previous_price, id_of_the_ticket, link, user
     if not pause:
         prices = get_prices(link)
-        price = int(prices[id_of_the_ticket])
+        prices = map(int, prices)
+        # price = int(prices[id_of_the_ticket])
+        price = min(prices)
         if price < previous_price:
             previous_price = price  # Перезапись цены, чтобы текущая стоимость билета для следующей была предыдущей
             bot.send_message(user,
@@ -100,7 +108,7 @@ def get_text_messages(message):
         bot.send_message(message.from_user.id, "Прекрасно! Я принял Вашу ссылку, осталось только уточнить номер "
                                                "билета (сверху вниз). Если билет один, то отправьте число 1.")
         link = message.text
-        bot.register_next_step_handler(message, clarify_the_ticket)
+        # bot.register_next_step_handler(message, clarify_the_ticket)
         # Ожидаю, пока пользователь введёт сообщение с числом, потом вызывается функция clarify_the_ticket()
     else:
         bot.send_message(message.from_user.id, "Прошу прощения, но я не понимаю, что Вы имеете в виду. Попробуйте "
@@ -112,7 +120,8 @@ def get_text_messages(message):
 def clarify_the_ticket(message):
     global id_of_the_ticket
     try:
-        id_of_the_ticket = int(message.text) - 1
+        # id_of_the_ticket = int(message.text) - 1
+        id_of_the_ticket = 0
         main()
     except ValueError:
         bot.send_message(message.from_user.id, "Прошу прощения, но нужно было ввести номер билета. Давайте начнём всё "
